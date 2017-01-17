@@ -48,24 +48,12 @@ function monotonic_schedulable(sorted_tasks) {
 
         while (prev != curr) {
             prev = curr;
-
-            let sum = 0;
-            for (let j = 0; j < i; ++j) {
-                sum += Math.ceil(curr / sorted_tasks[j].T) * sorted_tasks[j].C;
-            }
-            curr = sorted_tasks[i].C + sum;
+            curr = sorted_tasks[i].C + sorted_tasks.slice(i).reduce((acc, t) => acc + Math.ceil(curr / t.T) * t.C, 0);
         }
         return curr;
     }
 
-    for (let i = 0; i < sorted_tasks.length; ++i) {
-        let resp = response_time(i);
-        if (resp > sorted_tasks[i].T) {
-            return false;
-        }
-    }
-
-    return true;
+    return !sorted_tasks.some((el, idx) => response_time(idx) > el.T)
 }
 
 
