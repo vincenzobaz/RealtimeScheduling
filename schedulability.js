@@ -27,7 +27,8 @@ function EDF_schedulable(tasks) {
 
     let L = compute_L(tasks);
     tasks.filter(t => t.D < L).forEach(d => {
-        let sum = tasks.filter(t => t.D < d.D).reduce((acc, curr) => acc + (1 + Math.floor((d.D - curr.D) / curr.T)) * curr.C, 0);
+        let sum = tasks.filter(t => t.D < d.D)
+                       .reduce((acc, curr) => acc + (1 + Math.floor((d.D - curr.D) / curr.T)) * curr.C, 0);
         if (sum > d.D) return false;
     });
 
@@ -82,4 +83,4 @@ let B = Task(10,3,0);
 let C = Task(5,2,0);
 
 let tasks = [A, B, C];
-console.log("ordon " + RM_schedulable(tasks));
+console.log("RM Schedulable " + RM_schedulable(tasks));
