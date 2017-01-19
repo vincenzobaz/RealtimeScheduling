@@ -1,16 +1,37 @@
 
 function RM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T > b.T));
+    const sorted = tasks.slice().sort((a, b) => a.T > b.T);
+    const Rs = compute_Rs(sorted);
+
+    for (let i = 0; i < Rs.length; ++i) {
+        if (Rs[i] > sorted[i].T) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function DM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D));
+    const sorted = tasks.slice().sort((a, b) => a.D > b.D);
+    const Rs = compute_Rs(sorted);
+
+    for (let i = 0; i < Rs.length; ++i) {
+        if (Rs[i] > sorted[i].D) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function EDF_schedulable(tasks) {
     if (!necessary_condition(tasks)) {
         return false;
     }
+
+    if (!tasks.some(t => t.T > t.C)) {
+        return true;
+    }
+
      const compute_L = tasks => {
         let prev = 0;
         let curr = tasks.reduce((acc, curr) => acc + curr.C, 0);
@@ -37,7 +58,7 @@ function EDF_schedulable(tasks) {
 
 const necessary_condition = tasks => tasks.reduce((acc, curr) => acc + curr.C / curr.T, 0) <= 1;
 
-function monotonic_schedulable(sorted_tasks) {
+function compute_Rs(sorted_tasks) {
     if (!necessary_condition(tasks)) {
         return false;
     }
@@ -53,9 +74,10 @@ function monotonic_schedulable(sorted_tasks) {
         return curr;
     }
 
-    return !sorted_tasks.some((el, idx) => response_time(idx) > el.T)
+    return sorted_tasks.map((el, idx) => response_time(idx))
 }
 
+const pack
 
 function Task(T, C, D) {
     return {
