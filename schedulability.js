@@ -1,14 +1,10 @@
 
 function RM_schedulable(tasks) {
-    const sorted = tasks.slice().sort((a, b) => a.T > b.T);
-    const comparator = (r, task) => r <= t.T;
-    return monotonic_schedulable(sorted, comparator);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T > b.T), (r, task) => r <= t.T);
 }
 
 function DM_schedulable(tasks) {
-    const sorted = tasks.slice().sort((a, b) => a.D > b.D);
-    const comparator = (r, task) => r <= t.D;
-    return monotonic_schedulable(sorted);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D), (r, task) => r <= t.D);
 }
 
 function EDF_schedulable(tasks) {
