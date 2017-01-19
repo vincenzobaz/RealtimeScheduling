@@ -1,10 +1,10 @@
 
 function RM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T > b.T), (r, task) => r <= t.T);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T > b.T), (r, task) => r <= task.T);
 }
 
 function DM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D), (r, task) => r <= t.D);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D), (r, task) => r <= task.D);
 }
 
 const necessary_condition = tasks => tasks.reduce((acc, curr) => acc + curr.C / curr.T, 0) <= 1;
