@@ -7,6 +7,8 @@ function DM_schedulable(tasks) {
     return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D), (r, task) => r <= t.D);
 }
 
+const necessary_condition = tasks => tasks.reduce((acc, curr) => acc + curr.C / curr.T, 0) <= 1;
+
 function EDF_schedulable(tasks) {
     if (!necessary_condition(tasks)) {
         return false;
@@ -40,8 +42,6 @@ function EDF_schedulable(tasks) {
     return true;
 }
 
-const necessary_condition = tasks => tasks.reduce((acc, curr) => acc + curr.C / curr.T, 0) <= 1;
-
 function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
     if (!necessary_condition(tasks)) {
         return false;
@@ -67,8 +67,6 @@ function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
     }
     return true;
 }
-
-const pack
 
 function Task(T, C, D) {
     return {
