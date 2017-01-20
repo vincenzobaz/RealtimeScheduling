@@ -1,13 +1,46 @@
 
 function RM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T > b.T), (r, task) => r <= task.T);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.T < b.T), (r, task) => r <= task.T);
 }
 
 function DM_schedulable(tasks) {
-    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D > b.D), (r, task) => r <= task.D);
+    return monotonic_schedulable(tasks.slice().sort((a, b) => a.D < b.D), (r, task) => r <= task.D);
 }
 
 const necessary_condition = tasks => tasks.reduce((acc, curr) => acc + curr.C / curr.T, 0) <= 1;
+
+function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
+    if (!necessary_condition(tasks)) {
+        return false;
+    }
+    console.log(sorted_tasks);
+
+    const response_time = i => {
+        let prev = 0;
+        let curr = sorted_tasks[i].C;
+
+        if (i == sorted_tasks.length - 1) {
+            return curr;
+        }
+
+        while (prev != curr) {
+            prev = curr;
+            curr = sorted_tasks[i].C + sorted_tasks.slice(i + 1).reduce((acc, t) => acc + Math.ceil(curr / t.T) * t.C, 0);
+        }
+        return curr;
+    }
+
+    const Rs = sorted_tasks.map((el, idx) => response_time(idx));
+
+    Rs.forEach((r, idx) => console.log("R computed for " + sorted_tasks[idx].D + " : " + r))	;
+
+    for (let i = 0; i < sorted_tasks.length; ++i) {
+        if (!compare_r_and_task(Rs[i], sorted_tasks[i])) {
+            return false;
+        }
+    }
+    return true;
+}
 
 function EDF_schedulable(tasks) {
     if (!necessary_condition(tasks)) {
@@ -42,32 +75,6 @@ function EDF_schedulable(tasks) {
     return true;
 }
 
-function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
-    if (!necessary_condition(tasks)) {
-        return false;
-    }
-
-    const response_time = i => {
-        let prev = 0;
-        let curr = sorted_tasks[i].C;
-
-        while (prev != curr) {
-            prev = curr;
-            curr = sorted_tasks[i].C + sorted_tasks.slice(i).reduce((acc, t) => acc + Math.ceil(curr / t.T) * t.C, 0);
-        }
-        return curr;
-    }
-
-    const Rs = sorted_tasks.map((el, idx) => response_time(idx));
-
-    for (let i = 0; i < sorted_tasks.length; ++i) {
-        if (!compare_r_and_task(Rs[i], sorted_tasks[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
 function Task(T, C, D) {
     return {
         T:  T,
@@ -77,9 +84,14 @@ function Task(T, C, D) {
 }
 
 // SAMPLE CODE
-let A = Task(15,4,0);
-let B = Task(10,3,0);
-let C = Task(5,2,0);
+/*
+let A = Task(4,2,3);
+let B = Task(20,4,20);
+let C = Task(10,3,5);
+*/
+let A = Task(11,5,8);
+let B = Task(15,3,10);
+let C = Task(5,1,4);
 
 let tasks = [A, B, C];
-console.log("RM Schedulable " + RM_schedulable(tasks));
+console.log("DM Schedulable " + DM_schedulable(tasks));
