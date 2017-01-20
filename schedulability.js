@@ -44,7 +44,7 @@ function EDF_schedulable(tasks) {
         return false;
     }
 
-    if (!tasks.some(t => t.T > t.C)) {
+    if (!tasks.some(t => t.T > t.D)) {
         return true;
     }
 
