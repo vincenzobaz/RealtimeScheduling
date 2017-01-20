@@ -72,7 +72,7 @@ function EDF_schedulable(tasks) {
     return true;
 }
 
-function Task(T, C, D) {
+function Task(T, C, D = 0) {
     return {
         T:  T,
         C:  C,
