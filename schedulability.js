@@ -29,14 +29,7 @@ function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
         return curr;
     }
 
-    const Rs = sorted_tasks.map((el, idx) => response_time(idx));
-
-    for (let i = 0; i < sorted_tasks.length; ++i) {
-        if (!compare_r_and_task(Rs[i], sorted_tasks[i])) {
-            return false;
-        }
-    }
-    return true;
+    return sorted_tasks.every((t, idx) => compare_r_and_task(response_time(idx), t));
 }
 
 function EDF_schedulable(tasks) {
@@ -44,7 +37,7 @@ function EDF_schedulable(tasks) {
         return false;
     }
 
-    if (!tasks.some(t => t.T > t.D)) {
+    if (tasks.every(t => t.T <= t.D)) {
         return true;
     }
 
@@ -63,13 +56,10 @@ function EDF_schedulable(tasks) {
     }
 
     let L = compute_L(tasks);
-    tasks.filter(t => t.D < L).forEach(d => {
-        let sum = tasks.filter(t => t.D < d.D)
-                       .reduce((acc, curr) => acc + (1 + Math.floor((d.D - curr.D) / curr.T)) * curr.C, 0);
-        if (sum > d.D) return false;
-    });
 
-    return true;
+    return tasks.filter(t => t.D < L)
+                .map(d => tasks.filter(t => t.D < d.D).reduce((acc, curr) => acc + (1 + Math.floor((d.D - curr.D) / curr.T)) * curr.C, 0) <= d.D)
+                .every(e => e);
 }
 
 function Task(T, C, D = 0) {
