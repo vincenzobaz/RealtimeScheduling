@@ -13,7 +13,6 @@ function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
     if (!necessary_condition(tasks)) {
         return false;
     }
-    console.log(sorted_tasks);
 
     const response_time = i => {
         let prev = 0;
@@ -31,8 +30,6 @@ function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
     }
 
     const Rs = sorted_tasks.map((el, idx) => response_time(idx));
-
-    Rs.forEach((r, idx) => console.log("R computed for " + sorted_tasks[idx].D + " : " + r))	;
 
     for (let i = 0; i < sorted_tasks.length; ++i) {
         if (!compare_r_and_task(Rs[i], sorted_tasks[i])) {
