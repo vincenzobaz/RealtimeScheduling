@@ -21,10 +21,11 @@ function monotonic_schedulable(sorted_tasks, compare_r_and_task) {
         if (i == sorted_tasks.length - 1) {
             return curr;
         }
+	const higher_priority_tasks = sorted_tasks.slice(i + 1)
 
         while (prev != curr) {
             prev = curr;
-            curr = sorted_tasks[i].C + sorted_tasks.slice(i + 1).reduce((acc, t) => acc + Math.ceil(curr / t.T) * t.C, 0);
+            curr = sorted_tasks[i].C + higher_priority_tasks.reduce((acc, t) => acc + Math.ceil(curr / t.T) * t.C, 0);
         }
         return curr;
     }
